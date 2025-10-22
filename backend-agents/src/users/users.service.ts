@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
@@ -9,8 +9,22 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const created = new this.userModel(createUserDto);
-    return created.save();
+    const existing = await this.userModel
+      .findOne({ email: createUserDto.email.toLowerCase?.() ?? createUserDto.email })
+      .lean()
+      .exec();
+    if (existing) {
+      throw new ConflictException('Email already registered');
+    }
+    try {
+      const created = new this.userModel(createUserDto);
+      return await created.save();
+    } catch (err: any) {
+      if (err?.code === 11000 && err?.keyPattern?.email) {
+        throw new ConflictException('Email already registered');
+      }
+      throw err;
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {
