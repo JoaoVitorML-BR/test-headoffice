@@ -1,3 +1,5 @@
-// Placeholder for JwtAuthGuard
-// Will extend AuthGuard('jwt') when strategies are implemented
-export class JwtAuthGuardPlaceholder {}
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {}
