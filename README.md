@@ -57,7 +57,3 @@ npm start
 ## 👤 Autor
 
 **JoaoVitorML-BR**
-
-## 📄 Licença
-
-UNLICENSED
