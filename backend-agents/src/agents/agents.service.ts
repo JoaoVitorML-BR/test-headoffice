@@ -44,19 +44,21 @@ export class AgentsService {
 
   async update(id: string, updateAgentDto: UpdateAgentDto): Promise<Agent> {
     if (updateAgentDto.email) {
+      const emailLower = updateAgentDto.email.toLowerCase?.() ?? updateAgentDto.email;
       const exists = await this.agentModel
-        .findOne({ email: updateAgentDto.email.toLowerCase?.() ?? updateAgentDto.email, _id: { $ne: id } })
+        .findOne({ email: emailLower, _id: { $ne: id } })
         .lean()
         .exec();
       if (exists) {
         throw new ConflictException('Email already in use');
       }
+      (updateAgentDto as any).email = emailLower;
     }
 
     let updatedAgent: Agent | null = null;
     try {
       updatedAgent = await this.agentModel
-        .findByIdAndUpdate(id, updateAgentDto, { new: true })
+        .findByIdAndUpdate(id, updateAgentDto, { new: true, runValidators: true, context: 'query' })
         .exec();
     } catch (err: any) {
       if (err?.code === 11000 && err?.keyPattern?.email) {
