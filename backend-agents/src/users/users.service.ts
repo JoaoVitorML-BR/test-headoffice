@@ -28,11 +28,13 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email }).exec();
+    const normalized = email?.toLowerCase?.() ?? email;
+    return this.userModel.findOne({ email: normalized }).exec();
   }
 
   async findByEmailWithPassword(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email }).select('+password').exec();
+    const normalized = email?.toLowerCase?.() ?? email;
+    return this.userModel.findOne({ email: normalized }).select('+password').exec();
   }
 
   async findById(id: string): Promise<User | null> {

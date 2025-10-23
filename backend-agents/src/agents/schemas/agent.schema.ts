@@ -27,9 +27,6 @@ export class Agent {
 
   @Prop({ required: true, enum: UserRole, default: UserRole.USER })
   role: UserRole;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
 }
 
 export const AgentSchema = SchemaFactory.createForClass(Agent);
