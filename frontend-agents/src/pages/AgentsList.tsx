@@ -190,8 +190,8 @@ export default function AgentsList() {
 
                 {/* Delete Confirmation Modal */}
                 {deleteConfirm && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                        <div className="bg-white rounded-xl p-6 max-w-md w-full">
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+                        <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl animate-scaleIn">
                             <h3 className="text-lg font-bold text-gray-900 mb-2">Confirmar exclusão</h3>
                             <p className="text-gray-600 mb-6">
                                 Tem certeza que deseja deletar este agente? Esta ação não pode ser desfeita.
