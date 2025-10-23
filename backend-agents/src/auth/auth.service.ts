@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { User } from '../users/schemas/user.schema';
+import { UserRole } from '../common/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,12 @@ export class AuthService {
       throw new ConflictException('Email already registered');
     }
     const hashed = await bcrypt.hash(dto.password, 10);
-    const created = await this.usersService.create({ ...dto, password: hashed } as any);
+    const created = await this.usersService.create({
+      name: dto.name,
+      email: dto.email,
+      password: hashed,
+      role: UserRole.USER,
+    } as any);
     return this.stripSensitive(created);
   }
 
