@@ -23,7 +23,7 @@ API REST para gerenciamento de agentes com autenticação JWT, MongoDB e documen
 ### 1. Clone o repositório
 
 ```bash
-git clone <seu-repositorio>
+git clone https://github.com/JoaoVitorML-BR/test-headoffice
 cd backend-agents
 ```
 
@@ -41,35 +41,17 @@ Edite o arquivo `.env` com suas configurações.
 npm install
 ```
 
-## 🐳 Rodando com Docker
-
-### Subir todos os serviços (MongoDB + API)
+## � Executando o Projeto
 
 ```bash
 npm run docker:up
 ```
 
-## 💻 Rodando Localmente (sem Docker)
-
-### 1. Certifique-se que o MongoDB está rodando localmente
-
-```bash
-docker run -d -p 27017:27017 --name mongodb mongo:7.0
-```
-
-### 2. Atualize o MONGODB_URI no .env
-
-```env
-MONGODB_URI=mongodb://localhost:27017/agents_db
-```
-
-### 3. Execute em modo desenvolvimento
-
-```bash
-npm run start:dev
-```
-
-A API estará disponível em: `http://localhost:3001`
+Este comando irá:
+- ✅ Subir o MongoDB em container Docker
+- ✅ Subir a API NestJS em container Docker
+- ✅ Criar automaticamente o usuário admin padrão
+- ✅ Disponibilizar a API em `http://localhost:3001`
 
 ## 🔐 Usuário Administrador Padrão
 
@@ -88,32 +70,6 @@ Após iniciar a aplicação, acesse:
 
 ```
 http://localhost:3001/api/docs
-```
-
-## 🧪 Testes
-
-```bash
-# Testes unitários
-npm run test
-
-# Testes em watch mode
-npm run test:watch
-
-# Cobertura de testes
-npm run test:cov
-
-# Testes E2E
-npm run test:e2e
-```
-
-## 🔍 Lint
-
-```bash
-# Executar lint
-npm run lint
-
-# Formatar código
-npm run format
 ```
 
 ## 📁 Estrutura do Projeto
@@ -153,14 +109,8 @@ backend-agents/
 
 | Script | Descrição |
 |--------|-----------|
-| `npm run start` | Inicia a aplicação |
-| `npm run start:dev` | Inicia em modo desenvolvimento (hot-reload) |
-| `npm run start:prod` | Inicia em modo produção |
-| `npm run build` | Build da aplicação |
-| `npm run lint` | Executa o linter |
-| `npm run test` | Executa os testes |
-| `npm run docker:up` | Sobe os containers Docker |
-| `npm run docker:down` | Para os containers Docker |
+| `npm run docker:up` | Sobe MongoDB + API em containers |
+| `npm run docker:down` | Para os containers |
 | `npm run docker:logs` | Visualiza logs da aplicação |
 
 ## 📝 Licença
