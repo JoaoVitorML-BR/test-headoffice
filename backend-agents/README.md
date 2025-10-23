@@ -69,14 +69,25 @@ MONGODB_URI=mongodb://localhost:27017/agents_db
 npm run start:dev
 ```
 
-A API estará disponível em: `http://localhost:3000`
+A API estará disponível em: `http://localhost:3001`
+
+## 🔑 Usuário Administrador Padrão
+
+Ao iniciar a aplicação pela primeira vez, um usuário administrador é criado automaticamente:
+
+```
+Email: admin@headoffice.com
+Senha: Admin@123
+```
+
+⚠️ **IMPORTANTE:** Altere a senha padrão após o primeiro login!
 
 ## 📚 Documentação da API (Swagger)
 
 Após iniciar a aplicação, acesse:
 
 ```
-http://localhost:3000/api/docs
+http://localhost:3001/api/docs
 ```
 
 ## 🧪 Testes
