@@ -1,4 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { AgentStatus } from '../../common/enums/agent-status.enum';
@@ -48,4 +49,13 @@ export class CreateAgentDto {
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
+
+    @ApiProperty({ 
+      example: '2024-01-15', 
+      description: 'Agent hire date (ISO format: YYYY-MM-DD)',
+      required: false
+    })
+    @IsDateString()
+    @IsOptional()
+    hireDate?: string;
 }
