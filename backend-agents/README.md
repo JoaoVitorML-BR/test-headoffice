@@ -71,13 +71,13 @@ npm run start:dev
 
 A API estará disponível em: `http://localhost:3001`
 
-## 🔑 Usuário Administrador Padrão
+## 🔐 Usuário Administrador Padrão
 
-Ao iniciar a aplicação pela primeira vez, um usuário administrador é criado automaticamente:
+Na primeira execução, o sistema cria automaticamente um usuário administrador:
 
 ```
-Email: admin@headoffice.com
-Senha: Admin@123
+📧 Email: admin@headoffice.com
+🔑 Password: Admin@123
 ```
 
 ⚠️ **IMPORTANTE:** Altere a senha padrão após o primeiro login!
