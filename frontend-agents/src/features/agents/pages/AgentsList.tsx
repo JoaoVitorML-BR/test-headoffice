@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { agentsService } from '../services/agents.service';
 import { Agent, AgentStatus } from '../types/agent';
+import { AgentFilters } from '../types/agent-filters';
+import AgentsFilters from '../components/AgentsFilters';
 
 export default function AgentsList() {
     const navigate = useNavigate();
@@ -10,21 +12,57 @@ export default function AgentsList() {
     const [error, setError] = useState<string>('');
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
+    // Filter states
+    const [filters, setFilters] = useState<AgentFilters>({
+        search: '',
+        status: undefined,
+        department: '',
+        position: '',
+    });
+
     useEffect(() => {
         loadAgents();
     }, []);
 
-    const loadAgents = async () => {
+    const loadAgents = async (customFilters?: AgentFilters) => {
         try {
             setIsLoading(true);
             setError('');
-            const data = await agentsService.getAll();
+            const filtersToApply = customFilters || filters;
+
+            // Remove empty filters
+            const cleanFilters: AgentFilters = {};
+            if (filtersToApply.search?.trim()) cleanFilters.search = filtersToApply.search.trim();
+            if (filtersToApply.status) cleanFilters.status = filtersToApply.status;
+            if (filtersToApply.department?.trim()) cleanFilters.department = filtersToApply.department.trim();
+            if (filtersToApply.position?.trim()) cleanFilters.position = filtersToApply.position.trim();
+
+            const data = await agentsService.getAll(cleanFilters);
             setAgents(data);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Erro ao carregar agentes');
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleFilterChange = (field: keyof AgentFilters, value: string | AgentStatus | undefined) => {
+        setFilters(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleApplyFilters = () => {
+        loadAgents();
+    };
+
+    const handleClearFilters = () => {
+        const emptyFilters: AgentFilters = {
+            search: '',
+            status: undefined,
+            department: '',
+            position: '',
+        };
+        setFilters(emptyFilters);
+        loadAgents(emptyFilters);
     };
 
     const handleDelete = async (id: string) => {
@@ -91,6 +129,14 @@ export default function AgentsList() {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Filters Section */}
+                <AgentsFilters
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    onApply={handleApplyFilters}
+                    onClear={handleClearFilters}
+                />
+
                 {/* Error Message */}
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-shake">

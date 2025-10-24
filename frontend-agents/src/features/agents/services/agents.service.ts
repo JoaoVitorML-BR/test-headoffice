@@ -1,9 +1,23 @@
 import axios from '../../../api/axios';
-import { Agent, CreateAgentRequest, UpdateAgentRequest } from '../types/agent';
+import { Agent, CreateAgentRequest, UpdateAgentRequest, AgentStatus } from '../types/agent';
+
+export interface AgentFilters {
+    search?: string;
+    status?: AgentStatus;
+    department?: string;
+    position?: string;
+}
 
 export const agentsService = {
-    async getAll(): Promise<Agent[]> {
-        const response = await axios.get('/agents');
+    async getAll(filters?: AgentFilters): Promise<Agent[]> {
+        const params = new URLSearchParams();
+        
+        if (filters?.search) params.append('search', filters.search);
+        if (filters?.status) params.append('status', filters.status);
+        if (filters?.department) params.append('department', filters.department);
+        if (filters?.position) params.append('position', filters.position);
+
+        const response = await axios.get(`/agents${params.toString() ? `?${params.toString()}` : ''}`);
         return response.data;
     },
 
