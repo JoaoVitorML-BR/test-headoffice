@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { agentSchema, type AgentFormData } from '../schemas/agent.schema';
 import { AgentStatus } from '../types/agent';
-import { agentsService } from '../api/agents.service';
+import { agentsService } from '../services/agents.service';
 
 export default function AgentForm() {
     const navigate = useNavigate();

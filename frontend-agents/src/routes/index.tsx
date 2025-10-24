@@ -1,8 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
-import AgentsList from '../pages/AgentsList';
-import AgentForm from '../pages/AgentForm';
+import AgentsList from '../features/agents/pages/AgentsList';
+import AgentForm from '../features/agents/pages/AgentForm';
+import UsersList from '../features/users/pages/UsersList';
+import UserForm from '../features/users/pages/UserForm';
 import { PrivateRoute } from '../components/PrivateRoute';
 
 export function AppRoutes() {
@@ -38,6 +40,30 @@ export function AppRoutes() {
                 element={
                     <PrivateRoute>
                         <AgentForm />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/users"
+                element={
+                    <PrivateRoute>
+                        <UsersList />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/users/new"
+                element={
+                    <PrivateRoute>
+                        <UserForm />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/users/:id/edit"
+                element={
+                    <PrivateRoute>
+                        <UserForm />
                     </PrivateRoute>
                 }
             />

@@ -1,6 +1,7 @@
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
+  ADMIN = 'admin',
+  USER = 'user',
+  ENTERPRISE = 'enterprise',
 }
 
 export interface User {
@@ -25,7 +26,7 @@ export interface CreateUserRequest {
   name: string;
   email: string;
   password: string;
-  role: UserRole;
+  role?: UserRole;
 }
 
 export interface UpdateUserRequest {
