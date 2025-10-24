@@ -68,6 +68,10 @@ export class AgentsService {
       filter.position = { $regex: new RegExp(filterDto.position, 'i') };
     }
 
+    if (filterDto?.cpf) {
+      filter.cpf = { $regex: new RegExp(filterDto.cpf, 'i') };
+    }
+
     if (filterDto?.search) {
       filter.$or = [
         { name: { $regex: new RegExp(filterDto.search, 'i') } },
