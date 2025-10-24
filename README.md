@@ -1,32 +1,44 @@
-# 🚀 Test Head Office - Full Stack Application
+# 🏢 HeadOffice - Sistema de Gestão de Funcionários
 
-Sistema completo de gerenciamento de agentes com autenticação JWT, desenvolvido com NestJS e React.
+Sistema completo para administradores gerenciarem agentes (funcionários) com autenticação JWT, controle de roles e filtros avançados.
+
+## 🎯 Propósito
+
+Plataforma onde **1 ADMINISTRADOR** gerencia múltiplos **AGENTES** (funcionários), com:
+- ✅ Controle de acesso baseado em roles (ADMIN/AGENT)
+- ✅ CRUD completo de agentes
+- ✅ Filtros por nome, status, departamento e cargo
+- ✅ Autenticação JWT segura
+- ✅ Interface moderna e responsiva
 
 ## 📦 Estrutura do Monorepo
 
 ```
 test-headoffice/
-├── backend-agents/     # API REST com NestJS + MongoDB
-└── frontend-agents/    # Interface React (em desenvolvimento)
+├── backend-agents/     # API REST (NestJS + MongoDB)
+└── frontend-agents/    # Interface Web (React + TypeScript)
 ```
 
-## 🔧 Tecnologias
+## 🔧 Stack Tecnológico
 
 ### Backend
-- **NestJS** - Framework Node.js
-- **MongoDB** + **Mongoose** - Banco de dados
-- **JWT** - Autenticação
-- **Swagger** - Documentação da API
+- **NestJS** - Framework Node.js robusto
+- **MongoDB** + **Mongoose** - Banco NoSQL
+- **JWT** - Autenticação stateless
+- **Swagger** - Documentação automática
 - **Docker** - Containerização
 
-### Frontend (em breve)
-- **React** + **TypeScript**
-- **React Hook Form** - Gerenciamento de formulários
-- **Axios** - Requisições HTTP
+### Frontend
+- **React 18** + **TypeScript** - UI type-safe
+- **TailwindCSS** - Estilização moderna
+- **Zustand** - Gerenciamento de estado
+- **React Router v6** - Navegação
+- **Axios** - Client HTTP
+- **Zod** - Validação de schemas
 
-## 🚀 Como Rodar
+## 🚀 Quick Start
 
-### Backend
+### 1️⃣ Backend (API)
 
 ```bash
 cd backend-agents
@@ -34,26 +46,52 @@ npm install
 npm run docker:up
 ```
 
-A API estará em: `http://localhost:3000`
-Documentação: `http://localhost:3000/api/docs`
+**API:** `http://localhost:3001`  
+**Swagger:** `http://localhost:3001/api/docs`
 
-### Frontend (em desenvolvimento)
+**Login Padrão:**
+- Email: `admin@headoffice.com`
+- Senha: `Admin@123`
+
+### 2️⃣ Frontend
 
 ```bash
 cd frontend-agents
 npm install
-npm start
+npm run dev
 ```
 
-## 📝 Branches
+**App:** `http://localhost:5173`
 
-- `main` - Branch principal (produção)
-- `feature/database-config` - Configuração MongoDB
-- `feature/agents-crud` - CRUD de agentes
-- `feature/auth-jwt` - Autenticação JWT
-- `feature/swagger-docs` - Documentação Swagger
-- `feature/frontend` - Interface React
+## 📋 Funcionalidades
 
-## 👤 Autor
+### 👤 Administrador (Acesso ao Sistema)
+- ✅ Criar, editar e deletar agentes (funcionários)
+- ✅ Gerenciar usuários do sistema (outros admins)
+- ✅ Visualizar dashboard com estatísticas
+- ✅ Filtrar agentes por nome, status, departamento e cargo
+- ✅ Visualizar histórico completo de agentes
 
-**JoaoVitorML-BR**
+### 👥 Agente (Registro de Dados)
+> **Nota:** Agentes são **registros de funcionários**, não possuem login no sistema.
+
+Os agentes possuem:
+- 📋 Informações cadastrais (nome, email, telefone)
+- 💼 Dados profissionais (cargo, departamento)
+- 📅 Data de contratação
+- ✅ Status (ativo/inativo)
+
+**Apenas administradores** têm acesso ao sistema para gerenciar esses dados.
+
+## 🌿 Branches Principais
+
+- `main` - Produção estável
+- `dev` - Desenvolvimento ativo
+
+## 👨‍� Autor
+
+**João Vitor ML** - [GitHub](https://github.com/JoaoVitorML-BR)
+
+---
+
+⭐ **Feito com NestJS, React e muito ☕**

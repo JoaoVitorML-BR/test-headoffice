@@ -1,126 +1,174 @@
-# 🚀 Backend Agents - API REST com NestJS
+# � Backend - HeadOffice API
 
-API REST para gerenciamento de agentes com autenticação JWT, MongoDB e documentação Swagger.
+API REST robusta para gerenciamento de agentes (funcionários) com autenticação JWT, roles e filtros avançados.
 
-## 📋 Tecnologias
+## 🎯 Propósito
 
-- **Node.js** v20+
-- **NestJS** - Framework backend
-- **MongoDB** - Banco de dados NoSQL
-- **Mongoose** - ODM para MongoDB
-- **JWT** - Autenticação
-- **Swagger** - Documentação da API
+Backend da plataforma HeadOffice onde administradores gerenciam agentes/funcionários com controle de acesso baseado em roles.
+
+## 📋 Stack
+
+- **NestJS** - Framework TypeScript para Node.js
+- **MongoDB** + **Mongoose** - Banco de dados NoSQL
+- **JWT** - Autenticação stateless
+- **Passport** - Estratégias de autenticação
+- **Swagger/OpenAPI** - Documentação interativa
+- **Class Validator** - Validação de DTOs
 - **Docker** - Containerização
 
-## 🔧 Pré-requisitos
+## � Quick Start
 
-- Node.js 20+ instalado
-- Docker e Docker Compose instalados
-- Git instalado
+### Pré-requisitos
+- Node.js 20+
+- Docker & Docker Compose
 
-## 📦 Instalação
-
-### 1. Clone o repositório
+### Instalação
 
 ```bash
-git clone https://github.com/JoaoVitorML-BR/test-headoffice
-cd backend-agents
-```
-
-### 2. Configure as variáveis de ambiente
-
-```bash
-cp .env.example .env
-```
-
-Edite o arquivo `.env` com suas configurações.
-
-### 3. Instale as dependências
-
-```bash
+# Instalar dependências
 npm install
-```
 
-## � Executando o Projeto
-
-```bash
+# Subir MongoDB + API em containers
 npm run docker:up
 ```
 
-Este comando irá:
-- ✅ Subir o MongoDB em container Docker
-- ✅ Subir a API NestJS em container Docker
-- ✅ Criar automaticamente o usuário admin padrão
-- ✅ Disponibilizar a API em `http://localhost:3001`
+**API:** `http://localhost:3001`  
+**Swagger:** `http://localhost:3001/api/docs`
 
-## 🔐 Usuário Administrador Padrão
-
-Na primeira execução, o sistema cria automaticamente um usuário administrador:
+### Credenciais Padrão
 
 ```
-📧 Email: admin@headoffice.com
-🔑 Password: Admin@123
+Email: admin@headoffice.com
+Senha: Admin@123
 ```
 
-⚠️ **IMPORTANTE:** Altere a senha padrão após o primeiro login!
+## 📁 Estrutura
 
-## 📚 Documentação da API (Swagger)
+```
+src/
+├── agents/              # CRUD de agentes + filtros
+│   ├── dto/            # Data Transfer Objects
+│   ├── schemas/        # Mongoose schemas
+│   └── agents.service.ts
+├── auth/                # Autenticação JWT
+│   ├── guards/         # Guards de autenticação
+│   ├── strategies/     # Passport strategies
+│   └── auth.service.ts
+├── users/               # Gestão de usuários
+├── common/              # Enums, decorators, etc
+├── database/            # Configuração MongoDB
+└── seed/                # Seed do admin padrão
+```
 
-Após iniciar a aplicação, acesse:
+## 🔐 Roles e Permissões
+
+| Role | Permissões |
+|------|-----------|
+| **ADMIN** | Criar/editar/deletar agentes e usuários |
+| **AGENT** | Visualizar agentes, editar próprio perfil |
+
+## � Modelo de Dados
+
+### Agent (Agente/Funcionário)
+```typescript
+{
+  name: string;           // Nome completo
+  email: string;          // Email único
+  phone: string;          // Telefone
+  position: string;       // Cargo
+  department: string;     // Departamento
+  status: 'active' | 'inactive';
+  hireDate?: Date;        // Data de contratação
+}
+```
+
+### User (Usuário do Sistema)
+```typescript
+{
+  name: string;
+  email: string;
+  password: string;       // Hash bcrypt
+  role: 'ADMIN' | 'AGENT';
+}
+```
+
+## � Endpoints Principais
+
+### Autenticação
+- `POST /auth/register` - Registrar usuário
+- `POST /auth/login` - Login (retorna JWT)
+
+### Agentes (🔒 Requer autenticação)
+- `GET /agents` - Listar com filtros
+- `GET /agents/:id` - Buscar por ID
+- `POST /agents` - Criar (🔐 ADMIN)
+- `PATCH /agents/:id` - Atualizar (🔐 ADMIN)
+- `DELETE /agents/:id` - Deletar (🔐 ADMIN)
+
+**Filtros disponíveis:**
+- `?search=` - Busca por nome, email, cargo, departamento
+- `?status=` - Filtrar por status (active/inactive)
+- `?department=` - Filtrar por departamento
+- `?position=` - Filtrar por cargo
+
+### Usuários (🔐 ADMIN only)
+- `GET /users` - Listar usuários
+- `POST /users` - Criar usuário
+- `PATCH /users/:id` - Atualizar usuário
+- `DELETE /users/:id` - Deletar usuário
+
+## 🛠️ Scripts
+
+```bash
+# Desenvolvimento
+npm run docker:up          # Subir containers
+npm run docker:down        # Parar containers
+npm run docker:logs        # Ver logs
+```
+
+## 🐳 Docker
+
+O `docker-compose.yml` sobe:
+- **MongoDB** (porta 27017)
+- **API NestJS** (porta 3001)
+
+Volumes persistentes garantem que dados não sejam perdidos.
+
+## � Documentação
+
+Acesse o Swagger após subir a API:
 
 ```
 http://localhost:3001/api/docs
 ```
 
-## 📁 Estrutura do Projeto
+Interface interativa para testar todos os endpoints com autenticação JWT.
 
+## 🔒 Segurança
+
+- ✅ Senhas hasheadas com bcrypt (salt 10)
+- ✅ JWT com expiração configurável
+- ✅ Guards para proteção de rotas
+- ✅ CORS configurado
+- ✅ Helmet para headers seguros
+- ✅ Validação de DTOs com class-validator
+
+## � Variáveis de Ambiente
+
+Crie um `.env` baseado no `.env.example`:
+
+```env
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/headoffice
+
+# JWT
+JWT_SECRET=seu-secret-super-seguro
+JWT_EXPIRES_IN=1d
+
+# API
+PORT=3001
 ```
-backend-agents/
-├── src/
-│   ├── agents/          # Módulo de agentes (CRUD)
-│   ├── auth/            # Módulo de autenticação (JWT)
-│   ├── common/          # Código compartilhado
-│   ├── config/          # Configurações
-│   ├── database/        # Configuração do banco
-│   ├── app.module.ts    # Módulo principal
-│   └── main.ts          # Entry point
-├── test/                # Testes E2E
-├── docker-compose.yml   # Orquestração Docker
-├── Dockerfile           # Build da aplicação
-└── .env.example         # Exemplo de variáveis de ambiente
-```
-
-## 🔐 Modelo de Agente
-
-```typescript
-{
-  nome: string,
-  email: string,
-  telefone: string,
-  cargo: string,
-  departamento: string,
-  status: 'ativo' | 'inativo',
-  role: 'admin' | 'user' | 'enterprise',
-  dataCadastro: Date
-}
-```
-
-## 🚀 Scripts Disponíveis
-
-| Script | Descrição |
-|--------|-----------|
-| `npm run docker:up` | Sobe MongoDB + API em containers |
-| `npm run docker:down` | Para os containers |
-| `npm run docker:logs` | Visualiza logs da aplicação |
-
-## 📝 Licença
-
-Este projeto está sob a licença UNLICENSED.
-
-## 👤 Autor
-
-**JoaoVitorML-BR**
 
 ---
 
-⭐ Feito com NestJS e MongoDB
+⭐ **Desenvolvido com NestJS**
