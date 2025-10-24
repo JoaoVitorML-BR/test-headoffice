@@ -29,6 +29,7 @@ export class SeedService implements OnModuleInit {
             const adminData = {
                 name: 'Administrator',
                 email: 'admin@headoffice.com',
+                cpf: '84106700034',
                 password: await bcrypt.hash('Admin@123', 10),
                 role: UserRole.ADMIN,
             };
