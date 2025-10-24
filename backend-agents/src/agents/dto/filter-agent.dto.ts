@@ -12,6 +12,14 @@ export class FilterAgentDto {
     search?: string;
 
     @ApiPropertyOptional({
+        description: 'Filter by CPF (partial or complete, without formatting)',
+        example: '12345678900',
+    })
+    @IsOptional()
+    @IsString()
+    cpf?: string;
+
+    @ApiPropertyOptional({
         description: 'Filter by agent status',
         enum: AgentStatus,
         example: AgentStatus.ACTIVE,

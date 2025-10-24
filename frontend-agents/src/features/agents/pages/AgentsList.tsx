@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { agentsService } from '../services/agents.service';
 import { Agent, AgentStatus } from '../types/agent';
 import { AgentFilters } from '../types/agent-filters';
-import AgentsFilters from '../components/AgentsFilters';
+import GenericFilters, { FilterField } from '../../../components/GenericFilters';
 import { formatCPF } from '../../../utils/cpf.validator';
 
 export default function AgentsList() {
@@ -16,10 +16,28 @@ export default function AgentsList() {
     // Filter states
     const [filters, setFilters] = useState<AgentFilters>({
         search: '',
+        cpf: '',
         status: undefined,
         department: '',
         position: '',
     });
+
+    // Filter fields configuration
+    const filterFields: FilterField[] = [
+        { key: 'search', label: 'Buscar', type: 'text', placeholder: 'Nome, email, cargo...' },
+        { key: 'cpf', label: 'CPF', type: 'cpf', placeholder: '000.000.000-00' },
+        { 
+            key: 'status', 
+            label: 'Status', 
+            type: 'select', 
+            options: [
+                { value: AgentStatus.ACTIVE, label: 'Ativo' },
+                { value: AgentStatus.INACTIVE, label: 'Inativo' }
+            ]
+        },
+        { key: 'department', label: 'Departamento', type: 'text', placeholder: 'Ex: TI, RH...' },
+        { key: 'position', label: 'Cargo', type: 'text', placeholder: 'Ex: Desenvolvedor...' },
+    ];
 
     useEffect(() => {
         loadAgents();
@@ -34,6 +52,7 @@ export default function AgentsList() {
             // Remove empty filters
             const cleanFilters: AgentFilters = {};
             if (filtersToApply.search?.trim()) cleanFilters.search = filtersToApply.search.trim();
+            if (filtersToApply.cpf?.trim()) cleanFilters.cpf = filtersToApply.cpf.trim();
             if (filtersToApply.status) cleanFilters.status = filtersToApply.status;
             if (filtersToApply.department?.trim()) cleanFilters.department = filtersToApply.department.trim();
             if (filtersToApply.position?.trim()) cleanFilters.position = filtersToApply.position.trim();
@@ -58,6 +77,7 @@ export default function AgentsList() {
     const handleClearFilters = () => {
         const emptyFilters: AgentFilters = {
             search: '',
+            cpf: '',
             status: undefined,
             department: '',
             position: '',
@@ -131,8 +151,9 @@ export default function AgentsList() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Filters Section */}
-                <AgentsFilters
+                <GenericFilters
                     filters={filters}
+                    fields={filterFields}
                     onFilterChange={handleFilterChange}
                     onApply={handleApplyFilters}
                     onClear={handleClearFilters}

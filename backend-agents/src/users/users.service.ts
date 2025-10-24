@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FilterUserDto } from './dto/filter-user.dto';
 import { cleanCPF } from '../common/validators/cpf.validator';
 
 @Injectable()
@@ -64,8 +65,26 @@ export class UsersService {
     return this.userModel.findById(id).exec();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(filterDto?: FilterUserDto): Promise<User[]> {
+    const filter: any = {};
+
+    if (filterDto?.role) {
+      filter.role = filterDto.role;
+    }
+
+    if (filterDto?.cpf) {
+      // Allow partial CPF search
+      filter.cpf = { $regex: new RegExp(filterDto.cpf, 'i') };
+    }
+
+    if (filterDto?.search) {
+      filter.$or = [
+        { name: { $regex: new RegExp(filterDto.search, 'i') } },
+        { email: { $regex: new RegExp(filterDto.search, 'i') } },
+      ];
+    }
+
+    return this.userModel.find(filter).exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

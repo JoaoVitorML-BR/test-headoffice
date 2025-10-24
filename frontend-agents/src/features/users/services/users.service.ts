@@ -1,9 +1,10 @@
 import api from '../../../api/axios';
 import { User, CreateUserRequest, UpdateUserRequest } from '../types/user';
+import { UserFilters } from '../types/user-filters';
 
 export const usersService = {
-    async getAll(): Promise<User[]> {
-        const { data } = await api.get('/users');
+    async getAll(filters?: UserFilters): Promise<User[]> {
+        const { data } = await api.get('/users', { params: filters });
         return data;
     },
 

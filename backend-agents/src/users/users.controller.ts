@@ -9,11 +9,13 @@ import {
     HttpCode,
     HttpStatus,
     UseGuards,
+    Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FilterUserDto } from './dto/filter-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -44,12 +46,15 @@ export class UsersController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'Get all users', description: 'Retrieve a list of all users (admin only)' })
+    @ApiOperation({ 
+        summary: 'Get all users with optional filters', 
+        description: 'Retrieve a list of all users with optional filtering by search, CPF, and role (admin only)' 
+    })
     @ApiResponse({ status: 200, description: 'List of users returned successfully', type: [UserResponseDto] })
     @ApiResponse({ status: 401, description: 'Unauthorized - JWT token missing or invalid' })
     @ApiResponse({ status: 403, description: 'Forbidden - Requires ADMIN role' })
-    async findAll() {
-        return this.usersService.findAll();
+    async findAll(@Query() filterDto: FilterUserDto) {
+        return this.usersService.findAll(filterDto);
     }
 
     @Get(':id')

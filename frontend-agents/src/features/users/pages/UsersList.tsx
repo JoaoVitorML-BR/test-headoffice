@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usersService } from '../services/users.service';
 import { User, UserRole } from '../types/user';
+import { UserFilters } from '../types/user-filters';
+import GenericFilters, { FilterField } from '../../../components/GenericFilters';
 import { formatCPF } from '../../../utils/cpf.validator';
 
 export default function UsersList() {
@@ -11,21 +13,69 @@ export default function UsersList() {
     const [error, setError] = useState<string>('');
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
+    // Filter states
+    const [filters, setFilters] = useState<UserFilters>({
+        search: '',
+        cpf: '',
+        role: undefined,
+    });
+
+    // Filter fields configuration
+    const filterFields: FilterField[] = [
+        { key: 'search', label: 'Buscar', type: 'text', placeholder: 'Nome ou email...' },
+        { key: 'cpf', label: 'CPF', type: 'cpf', placeholder: '000.000.000-00' },
+        { 
+            key: 'role', 
+            label: 'Role', 
+            type: 'select', 
+            options: [
+                { value: UserRole.ADMIN, label: 'Admin' },
+                { value: UserRole.USER, label: 'Usuário' }
+            ]
+        },
+    ];
+
     useEffect(() => {
         loadUsers();
     }, []);
 
-    const loadUsers = async () => {
+    const loadUsers = async (customFilters?: UserFilters) => {
         try {
             setIsLoading(true);
             setError('');
-            const data = await usersService.getAll();
+            const filtersToApply = customFilters || filters;
+
+            // Remove empty filters
+            const cleanFilters: UserFilters = {};
+            if (filtersToApply.search?.trim()) cleanFilters.search = filtersToApply.search.trim();
+            if (filtersToApply.cpf?.trim()) cleanFilters.cpf = filtersToApply.cpf.trim();
+            if (filtersToApply.role) cleanFilters.role = filtersToApply.role;
+
+            const data = await usersService.getAll(cleanFilters);
             setUsers(data);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Erro ao carregar usuários');
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleFilterChange = (field: keyof UserFilters, value: string | UserRole | undefined) => {
+        setFilters(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleApplyFilters = () => {
+        loadUsers();
+    };
+
+    const handleClearFilters = () => {
+        const emptyFilters: UserFilters = {
+            search: '',
+            cpf: '',
+            role: undefined,
+        };
+        setFilters(emptyFilters);
+        loadUsers(emptyFilters);
     };
 
     const handleDelete = async (id: string) => {
@@ -93,6 +143,15 @@ export default function UsersList() {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Filters Section */}
+                <GenericFilters
+                    filters={filters}
+                    fields={filterFields}
+                    onFilterChange={handleFilterChange}
+                    onApply={handleApplyFilters}
+                    onClear={handleClearFilters}
+                />
+
                 {/* Error Message */}
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-shake">
