@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { agentSchema, type AgentFormData } from '../schemas/agent.schema';
 import { AgentStatus } from '../types/agent';
 import { agentsService } from '../services/agents.service';
+import { maskCPF } from '../../../utils/cpf.validator';
 
 export default function AgentForm() {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function AgentForm() {
         handleSubmit,
         formState: { errors },
         setValue,
+        control,
     } = useForm<AgentFormData>({
         resolver: zodResolver(agentSchema),
     });
@@ -35,6 +37,7 @@ export default function AgentForm() {
             setIsLoadingData(true);
             const agent = await agentsService.getById(agentId);
             setValue('name', agent.name);
+            setValue('cpf', agent.cpf);
             setValue('email', agent.email);
             setValue('phone', agent.phone);
             setValue('position', agent.position);
@@ -60,6 +63,7 @@ export default function AgentForm() {
     function toBackendPayload(data: AgentFormData) {
         return {
             name: data.name,
+            cpf: data.cpf,
             email: data.email,
             phone: data.phone,
             position: data.position,
@@ -159,6 +163,36 @@ export default function AgentForm() {
                             />
                             {errors.name && (
                                 <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                            )}
+                        </div>
+
+                        {/* CPF */}
+                        <div>
+                            <label htmlFor="cpf" className="block text-sm font-semibold text-gray-700 mb-2">
+                                CPF
+                            </label>
+                            <Controller
+                                name="cpf"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        {...field}
+                                        type="text"
+                                        id="cpf"
+                                        className="block w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="000.000.000-00"
+                                        disabled={isLoading}
+                                        value={maskCPF(field.value || '')}
+                                        onChange={(e) => {
+                                            const masked = maskCPF(e.target.value);
+                                            field.onChange(masked);
+                                        }}
+                                        maxLength={14}
+                                    />
+                                )}
+                            />
+                            {errors.cpf && (
+                                <p className="mt-1 text-sm text-red-600">{errors.cpf.message}</p>
                             )}
                         </div>
 

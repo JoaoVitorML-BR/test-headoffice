@@ -7,6 +7,7 @@ export enum AgentStatus {
 export interface Agent {
   _id: string;
   name: string;
+  cpf: string;
   email: string;
   phone: string;
   position: string;
@@ -19,6 +20,7 @@ export interface Agent {
 
 export interface CreateAgentRequest {
   name: string;
+  cpf: string;
   email: string;
   phone: string;
   position: string;
@@ -29,6 +31,7 @@ export interface CreateAgentRequest {
 
 export interface UpdateAgentRequest {
   name?: string;
+  cpf?: string;
   email?: string;
   phone?: string;
   position?: string;

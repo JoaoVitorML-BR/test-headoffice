@@ -1,5 +1,6 @@
 
 import { z } from 'zod';
+import { cpfValidation } from '../../../validations/cpf.validation';
 
 const brazilPhoneRegex = /^(\(?\d{2}\)?\s?)?(\d{4,5}-?\d{4})$/;
 
@@ -8,6 +9,7 @@ export const agentSchema = z.object({
         .string()
         .min(3, 'Nome deve ter no mínimo 3 caracteres')
         .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    cpf: cpfValidation,
     email: z
         .string()
         .email('Email inválido')

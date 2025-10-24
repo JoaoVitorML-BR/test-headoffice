@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usersService } from '../services/users.service';
 import { userSchema, type UserFormData } from '../schemas/user.schema';
 import { UserRole } from '../types/user';
+import { maskCPF } from '../../../utils/cpf.validator';
 
 export default function UserForm() {
     const { id } = useParams<{ id: string }>();
@@ -20,6 +21,7 @@ export default function UserForm() {
         handleSubmit,
         setValue,
         formState: { errors },
+        control,
     } = useForm<UserFormData>({
         resolver: zodResolver(userSchema),
     });
@@ -35,10 +37,10 @@ export default function UserForm() {
             setIsLoadingData(true);
             const user = await usersService.getById(userId);
             setValue('name', user.name);
+            setValue('cpf', user.cpf);
             setValue('email', user.email);
             setValue('role',
-                String(user.role).toLowerCase() === 'admin' ? 'admin' :
-                    String(user.role).toLowerCase() === 'enterprise' ? 'enterprise' : 'user'
+                String(user.role).toLowerCase() === 'admin' ? 'admin' : 'user'
             );
             setValue('password', '');
         } catch (err: any) {
@@ -51,9 +53,10 @@ export default function UserForm() {
     function toBackendPayload(data: UserFormData) {
         const payload: any = {
             name: data.name,
+            cpf: data.cpf,
             email: data.email,
             role: data.role === 'admin' ? UserRole.ADMIN :
-                data.role === 'enterprise' ? UserRole.ENTERPRISE : UserRole.USER,
+                data.role === 'user' ? UserRole.USER : UserRole.USER,
         };
 
         if (data.password && data.password.trim() !== '') {
@@ -157,6 +160,36 @@ export default function UserForm() {
                             )}
                         </div>
 
+                        {/* CPF */}
+                        <div>
+                            <label htmlFor="cpf" className="block text-sm font-medium text-gray-700 mb-2">
+                                CPF
+                            </label>
+                            <Controller
+                                name="cpf"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        {...field}
+                                        type="text"
+                                        id="cpf"
+                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.cpf ? 'border-red-500' : 'border-gray-300'
+                                            }`}
+                                        placeholder="000.000.000-00"
+                                        value={maskCPF(field.value || '')}
+                                        onChange={(e) => {
+                                            const masked = maskCPF(e.target.value);
+                                            field.onChange(masked);
+                                        }}
+                                        maxLength={14}
+                                    />
+                                )}
+                            />
+                            {errors.cpf && (
+                                <p className="mt-1 text-sm text-red-600">{errors.cpf.message}</p>
+                            )}
+                        </div>
+
                         {/* Email */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -207,7 +240,6 @@ export default function UserForm() {
                                 <option value="">Selecione...</option>
                                 <option value="user">Usuário</option>
                                 <option value="admin">Admin</option>
-                                <option value="enterprise">Empresa</option>
                             </select>
                             {errors.role && (
                                 <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
