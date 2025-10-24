@@ -20,8 +20,8 @@ export const userSchema = z.object({
         .or(z.literal('')),
     role: z.string()
         .min(1, 'Role é obrigatório')
-        .refine((val) => val === 'admin' || val === 'user' || val === 'enterprise', {
-            message: 'Role deve ser Admin, Usuário ou Empresa',
+        .refine((val) => val === 'admin' || val === 'user', {
+            message: 'Role deve ser Admin ou Usuário',
         }),
 });
 
