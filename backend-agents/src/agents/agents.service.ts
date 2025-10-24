@@ -4,12 +4,13 @@ import { Model } from 'mongoose';
 import { Agent, AgentDocument } from './schemas/agent.schema';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
+import { FilterAgentDto } from './dto/filter-agent.dto';
 
 @Injectable()
 export class AgentsService {
   constructor(
     @InjectModel(Agent.name) private agentModel: Model<AgentDocument>,
-  ) {}
+  ) { }
 
   async create(createAgentDto: CreateAgentDto): Promise<Agent> {
     const existing = await this.agentModel
@@ -30,8 +31,31 @@ export class AgentsService {
     }
   }
 
-  async findAll(): Promise<Agent[]> {
-    return this.agentModel.find().exec();
+  async findAll(filterDto?: FilterAgentDto): Promise<Agent[]> {
+    const filter: any = {};
+
+    if (filterDto?.status) {
+      filter.status = filterDto.status;
+    }
+
+    if (filterDto?.department) {
+      filter.department = { $regex: new RegExp(filterDto.department, 'i') };
+    }
+
+    if (filterDto?.position) {
+      filter.position = { $regex: new RegExp(filterDto.position, 'i') };
+    }
+
+    if (filterDto?.search) {
+      filter.$or = [
+        { name: { $regex: new RegExp(filterDto.search, 'i') } },
+        { email: { $regex: new RegExp(filterDto.search, 'i') } },
+        { position: { $regex: new RegExp(filterDto.search, 'i') } },
+        { department: { $regex: new RegExp(filterDto.search, 'i') } },
+      ];
+    }
+
+    return this.agentModel.find(filter).exec();
   }
 
   async findById(id: string): Promise<Agent> {
