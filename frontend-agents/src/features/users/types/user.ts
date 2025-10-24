@@ -7,6 +7,7 @@ export enum UserRole {
 export interface User {
   _id: string;
   name: string;
+  cpf: string;
   email: string;
   role: UserRole;
   createdAt: string;
@@ -24,6 +25,7 @@ export interface LoginResponse {
 
 export interface CreateUserRequest {
   name: string;
+  cpf: string;
   email: string;
   password: string;
   role?: UserRole;
@@ -31,6 +33,7 @@ export interface CreateUserRequest {
 
 export interface UpdateUserRequest {
   name?: string;
+  cpf?: string;
   email?: string;
   password?: string;
   role?: UserRole;
