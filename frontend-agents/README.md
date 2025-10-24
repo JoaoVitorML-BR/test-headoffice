@@ -1,135 +1,182 @@
-# React + TypeScript + Vite
+# 🎨 Frontend - HeadOffice Interface
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface web moderna e responsiva para gerenciamento de agentes (funcionários) com autenticação JWT e filtros avançados.
 
-Currently, two official plugins are available:
+## 🎯 Propósito
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Dashboard administrativo onde gestores controlam agentes/funcionários com:
+- ✅ Login seguro com JWT
+- ✅ Filtros em tempo real (nome, status, departamento, cargo)
+- ✅ CRUD completo de agentes
+- ✅ Componentes desacoplados e reutilizáveis
+- ✅ Design responsivo e moderno
 
-## React Compiler
+## � Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-# Frontend - HeadOffice Agents Management
-
-Frontend application for managing agents with authentication and role-based access control.
-
-## 🚀 Tech Stack
-
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **TailwindCSS** - Utility-first CSS framework
-- **React Router v6** - Client-side routing
-- **Axios** - HTTP client
-- **Zustand** - State management
-- **React Query** - Server state management
+- **React 18** - UI Library
+- **TypeScript** - Type Safety
+- **Vite** - Build tool ultrarrápido
+- **TailwindCSS** - Utility-first CSS
+- **React Router v6** - Roteamento
+- **Axios** - HTTP Client
+- **Zustand** - State Management
+- **Zod** - Schema Validation
 - **React Hook Form** - Form handling
-- **Zod** - Schema validation
 
-## 📁 Project Structure
+## 🚀 Quick Start
 
-```
-src/
-├── api/           # Axios configuration and API clients
-├── components/    # Reusable React components
-├── pages/         # Page components (Login, Dashboard, Agents, Users)
-├── hooks/         # Custom React hooks
-├── store/         # Zustand stores (auth, etc)
-├── types/         # TypeScript type definitions
-├── utils/         # Helper functions
-├── routes/        # Route configuration
-└── App.tsx        # Main app component
-```
+### Pré-requisitos
+- Node.js 20+
+- Backend rodando em `http://localhost:3001`
 
-## 🔧 Environment Variables
-
-Create a `.env` file based on `.env.example`:
-
-```env
-VITE_API_URL=http://localhost:3001/api/v1
-```
-
-## 📦 Installation
+### Instalação
 
 ```bash
+# Instalar dependências
 npm install
-```
 
-## 🏃 Development
-
-```bash
+# Rodar em desenvolvimento
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+**App:** `http://localhost:5173`
 
-## 🏗️ Build
+### Build para Produção
 
 ```bash
 npm run build
+npm run preview  # Preview da build
 ```
 
-## 🎨 Features
+## 📁 Arquitetura
 
-- ✅ JWT Authentication
-- ✅ Protected Routes
-- ✅ Role-based Access Control (ADMIN, USER)
-- ✅ Agents CRUD
-- ✅ Users CRUD (Admin only)
-- ✅ Form validation with Zod
-- ✅ Responsive design with TailwindCSS
-- ✅ Loading states and error handling
-- ✅ Token refresh and auto-logout
-
-## 📝 API Integration
-
-The frontend connects to the NestJS backend at `http://localhost:3001/api/v1`
-
-### Available Endpoints:
-
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - Login
-- `GET /users` - List users (Admin only)
-- `POST /users` - Create user (Admin only)
-- `PATCH /users/:id` - Update user (Admin only)
-- `DELETE /users/:id` - Delete user (Admin only)
-- `GET /agents` - List agents
-- `POST /agents` - Create agent
-- `PATCH /agents/:id` - Update agent
-- `DELETE /agents/:id` - Delete agent
-
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── features/              # Features modulares
+│   ├── agents/           # Módulo de agentes
+│   │   ├── components/   # AgentsFilters, etc
+│   │   ├── pages/        # AgentsList, AgentForm
+│   │   ├── services/     # agents.service.ts
+│   │   ├── types/        # agent.ts, agent-filters.ts
+│   │   └── schemas/      # Validação Zod
+│   └── users/            # Módulo de usuários
+├── api/                  # Axios config
+├── components/           # Componentes globais
+│   └── PrivateRoute.tsx  # Proteção de rotas
+├── pages/                # Páginas principais
+│   ├── Login.tsx
+│   └── Dashboard.tsx
+├── routes/               # Configuração de rotas
+├── store/                # Zustand stores
+│   └── authStore.ts
+└── schemas/              # Validações globais
+```
+
+## 🔐 Autenticação
+
+### Fluxo JWT
+
+1. Login → Backend retorna token
+2. Token armazenado no Zustand store
+3. Axios interceptor injeta token em requests
+4. `PrivateRoute` protege rotas autenticadas
+5. Auto-logout em 401/403
+
+### Rotas Protegidas
+
+```typescript
+<PrivateRoute>
+  <AgentsList />
+</PrivateRoute>
+```
+
+## 🔍 Sistema de Filtros
+
+### Componente Desacoplado
+
+```typescript
+<AgentsFilters
+  filters={filters}
+  onFilterChange={handleFilterChange}
+  onApply={handleApplyFilters}
+  onClear={handleClearFilters}
+/>
+```
+
+### Filtros Disponíveis
+- **Busca** - Nome, email, cargo, departamento
+- **Status** - Ativo/Inativo
+- **Departamento** - Texto livre
+- **Cargo** - Texto livre
+
+## 🛠️ Scripts
+
+```bash
+npm run dev          # Desenvolvimento (Vite)
+npm run build        # Build produção
+```
+
+## 🌐 Integração com API
+
+### Base URL
+```typescript
+// api/axios.ts
+baseURL: 'http://localhost:3001'
+```
+
+### Serviços
+
+```typescript
+// features/agents/services/agents.service.ts
+agentsService.getAll(filters)    // GET /agents?search=...
+agentsService.getById(id)        // GET /agents/:id
+agentsService.create(data)       // POST /agents
+agentsService.update(id, data)   // PATCH /agents/:id
+agentsService.delete(id)         // DELETE /agents/:id
+```
+
+## 📦 Tipos TypeScript
+
+### Agent
+```typescript
+interface Agent {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  department: string;
+  status: AgentStatus;
+  hireDate?: string;
+}
+```
+
+### AgentFilters
+```typescript
+interface AgentFilters {
+  search?: string;
+  status?: AgentStatus;
+  department?: string;
+  position?: string;
+}
+```
+
+## 🔒 Segurança
+
+- ✅ JWT em header Authorization
+- ✅ Validação de forms com Zod
+- ✅ Sanitização de inputs
+- ✅ CORS habilitado no backend
+- ✅ Rotas protegidas por roles
+
+## 📝 Variáveis de Ambiente
+
+Crie `.env` baseado em `.env.example`:
+
+```env
+VITE_API_URL=http://localhost:3001
+```
+
+---
+
+⭐ **Desenvolvido com React + TypeScript + TailwindCSS**
