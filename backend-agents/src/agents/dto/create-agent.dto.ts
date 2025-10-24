@@ -49,7 +49,7 @@ export class CreateAgentDto {
 
   @ApiProperty({ 
     example: 'USER', 
-    description: 'Agent role (ADMIN, USER, or ENTERPRISE). Defaults to USER if not provided.',
+    description: 'Agent role (ADMIN or USER). Defaults to USER if not provided.',
     enum: UserRole,
     required: false
   })

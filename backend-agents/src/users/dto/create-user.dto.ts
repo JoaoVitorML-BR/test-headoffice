@@ -27,7 +27,7 @@ export class CreateUserDto {
 
   @ApiProperty({ 
     example: 'USER', 
-    description: 'User role (ADMIN, USER, or ENTERPRISE). Note: public registration via /auth/register always creates USER role.',
+    description: 'User role (ADMIN or USER). Defaults to USER if not provided.',
     enum: UserRole,
     required: false
   })
