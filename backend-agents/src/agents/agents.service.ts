@@ -5,6 +5,7 @@ import { Agent, AgentDocument } from './schemas/agent.schema';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { FilterAgentDto } from './dto/filter-agent.dto';
+import { cleanCPF } from '../common/validators/cpf.validator';
 
 @Injectable()
 export class AgentsService {
@@ -13,19 +14,40 @@ export class AgentsService {
   ) { }
 
   async create(createAgentDto: CreateAgentDto): Promise<Agent> {
-    const existing = await this.agentModel
-      .findOne({ email: createAgentDto.email.toLowerCase?.() ?? createAgentDto.email })
+    const emailLower = createAgentDto.email.toLowerCase?.() ?? createAgentDto.email;
+    const cpfCleaned = cleanCPF(createAgentDto.cpf);
+
+    const existingEmail = await this.agentModel
+      .findOne({ email: emailLower })
       .lean()
       .exec();
-    if (existing) {
+    if (existingEmail) {
       throw new ConflictException('Email already in use');
     }
+
+    const existingCPF = await this.agentModel
+      .findOne({ cpf: cpfCleaned })
+      .lean()
+      .exec();
+    if (existingCPF) {
+      throw new ConflictException('CPF already in use');
+    }
+
     try {
-      const createdAgent = new this.agentModel(createAgentDto);
+      const createdAgent = new this.agentModel({
+        ...createAgentDto,
+        email: emailLower,
+        cpf: cpfCleaned,
+      });
       return await createdAgent.save();
     } catch (err: any) {
-      if (err?.code === 11000 && err?.keyPattern?.email) {
-        throw new ConflictException('Email already in use');
+      if (err?.code === 11000) {
+        if (err?.keyPattern?.email) {
+          throw new ConflictException('Email already in use');
+        }
+        if (err?.keyPattern?.cpf) {
+          throw new ConflictException('CPF already in use');
+        }
       }
       throw err;
     }
@@ -67,6 +89,7 @@ export class AgentsService {
   }
 
   async update(id: string, updateAgentDto: UpdateAgentDto): Promise<Agent> {
+    // Verifica email duplicado
     if (updateAgentDto.email) {
       const emailLower = updateAgentDto.email.toLowerCase?.() ?? updateAgentDto.email;
       const exists = await this.agentModel
@@ -79,14 +102,32 @@ export class AgentsService {
       (updateAgentDto as any).email = emailLower;
     }
 
+    // Verifica CPF duplicado
+    if (updateAgentDto.cpf) {
+      const cpfCleaned = cleanCPF(updateAgentDto.cpf);
+      const exists = await this.agentModel
+        .findOne({ cpf: cpfCleaned, _id: { $ne: id } })
+        .lean()
+        .exec();
+      if (exists) {
+        throw new ConflictException('CPF already in use');
+      }
+      (updateAgentDto as any).cpf = cpfCleaned;
+    }
+
     let updatedAgent: Agent | null = null;
     try {
       updatedAgent = await this.agentModel
         .findByIdAndUpdate(id, updateAgentDto, { new: true, runValidators: true, context: 'query' })
         .exec();
     } catch (err: any) {
-      if (err?.code === 11000 && err?.keyPattern?.email) {
-        throw new ConflictException('Email already in use');
+      if (err?.code === 11000) {
+        if (err?.keyPattern?.email) {
+          throw new ConflictException('Email already in use');
+        }
+        if (err?.keyPattern?.cpf) {
+          throw new ConflictException('CPF already in use');
+        }
       }
       throw err;
     }
