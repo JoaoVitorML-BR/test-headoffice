@@ -4,6 +4,7 @@ import { agentsService } from '../services/agents.service';
 import { Agent, AgentStatus } from '../types/agent';
 import { AgentFilters } from '../types/agent-filters';
 import AgentsFilters from '../components/AgentsFilters';
+import { formatCPF } from '../../../utils/cpf.validator';
 
 export default function AgentsList() {
     const navigate = useNavigate();
@@ -184,6 +185,7 @@ export default function AgentsList() {
                             <thead className="bg-gray-50">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPF</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departamento</th>
@@ -197,6 +199,9 @@ export default function AgentsList() {
                                     <tr key={agent._id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">{agent.name}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-500">{formatCPF(agent.cpf)}</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm text-gray-500">{agent.email}</div>
