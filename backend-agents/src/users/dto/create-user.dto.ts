@@ -1,6 +1,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../common/enums/user-role.enum';
+import { IsCPF } from '../../common/decorators/is-cpf.decorator';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'John Doe', description: 'Full name of the user' })
@@ -12,6 +13,12 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @ApiProperty({ example: '123.456.789-00', description: 'User CPF (Brazilian tax ID, unique)' })
+  @IsString()
+  @IsNotEmpty()
+  @IsCPF()
+  cpf: string;
 
   @ApiProperty({ example: 'securePass123', description: 'User password (min 6 characters)' })
   @IsString()
