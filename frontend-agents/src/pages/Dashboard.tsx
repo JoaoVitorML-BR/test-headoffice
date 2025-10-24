@@ -171,7 +171,7 @@ export default function Dashboard() {
                             </div>
                         </button>
 
-                        {user?.role === 'admin' && (
+                        {(user?.role as unknown) === 'admin' && (
                             <button onClick={() => navigate('/users')} className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all group">
                                 <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                                     <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
