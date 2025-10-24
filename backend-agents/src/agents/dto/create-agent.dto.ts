@@ -1,7 +1,9 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { AgentStatus } from '../../common/enums/agent-status.enum';
+import { IsCPF } from '../../common/decorators/is-cpf.decorator';
 
 export class CreateAgentDto {
   @ApiProperty({ example: 'João Silva', description: 'Full name of the agent' })
@@ -13,6 +15,12 @@ export class CreateAgentDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @ApiProperty({ example: '123.456.789-00', description: 'Agent CPF (Brazilian tax ID, unique)' })
+  @IsString()
+  @IsNotEmpty()
+  @IsCPF()
+  cpf: string;
 
   @ApiProperty({ example: '+55 11 98765-4321', description: 'Agent phone number' })
   @IsString()
@@ -41,11 +49,20 @@ export class CreateAgentDto {
 
   @ApiProperty({ 
     example: 'USER', 
-    description: 'Agent role (ADMIN, USER, or ENTERPRISE). Defaults to USER if not provided.',
+    description: 'Agent role (ADMIN or USER). Defaults to USER if not provided.',
     enum: UserRole,
     required: false
   })
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
+
+    @ApiProperty({ 
+      example: '2024-01-15', 
+      description: 'Agent hire date (ISO format: YYYY-MM-DD)',
+      required: false
+    })
+    @IsDateString()
+    @IsOptional()
+    hireDate?: string;
 }

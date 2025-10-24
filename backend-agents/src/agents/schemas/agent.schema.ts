@@ -13,6 +13,9 @@ export class Agent {
   @Prop({ required: true, unique: true, lowercase: true, index: true })
   email: string;
 
+  @Prop({ required: true, unique: true, index: true })
+  cpf: string;
+
   @Prop({ required: true })
   phone: string;
 
@@ -27,6 +30,9 @@ export class Agent {
 
   @Prop({ required: true, enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+    @Prop({ required: false })
+    hireDate?: Date;
 }
 
 export const AgentSchema = SchemaFactory.createForClass(Agent);

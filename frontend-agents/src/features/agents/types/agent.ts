@@ -1,11 +1,13 @@
+
 export enum AgentStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
 }
 
 export interface Agent {
   _id: string;
   name: string;
+  cpf: string;
   email: string;
   phone: string;
   position: string;
@@ -18,20 +20,22 @@ export interface Agent {
 
 export interface CreateAgentRequest {
   name: string;
+  cpf: string;
   email: string;
   phone: string;
   position: string;
   department: string;
-  status: AgentStatus;
-  hireDate: string;
+  status: AgentStatus; // 'active' | 'inactive'
+  hireDate?: string;
 }
 
 export interface UpdateAgentRequest {
   name?: string;
+  cpf?: string;
   email?: string;
   phone?: string;
   position?: string;
   department?: string;
-  status?: AgentStatus;
+  status?: AgentStatus; // 'active' | 'inactive'
   hireDate?: string;
 }

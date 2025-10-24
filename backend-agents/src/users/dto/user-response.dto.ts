@@ -14,6 +14,9 @@ export class UserResponseDto {
   @ApiProperty({ example: 'john.doe@example.com', description: 'User email address' })
   email: string;
 
+  @ApiProperty({ example: '123.456.789-00', description: 'User CPF (Brazilian tax ID)' })
+  cpf: string;
+
   @ApiProperty({ 
     example: 'USER', 
     description: 'User role',

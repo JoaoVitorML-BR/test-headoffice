@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   private stripSensitive(user: any) {
     if (!user) return user;
@@ -29,6 +29,7 @@ export class AuthService {
     const created = await this.usersService.create({
       name: dto.name,
       email: dto.email,
+      cpf: dto.cpf,
       password: hashed,
       role: UserRole.USER,
     } as any);
