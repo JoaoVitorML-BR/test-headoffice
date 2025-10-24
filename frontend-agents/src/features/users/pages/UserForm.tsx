@@ -40,8 +40,7 @@ export default function UserForm() {
             setValue('cpf', user.cpf);
             setValue('email', user.email);
             setValue('role',
-                String(user.role).toLowerCase() === 'admin' ? 'admin' :
-                    String(user.role).toLowerCase() === 'enterprise' ? 'enterprise' : 'user'
+                String(user.role).toLowerCase() === 'admin' ? 'admin' : 'user'
             );
             setValue('password', '');
         } catch (err: any) {
@@ -57,7 +56,7 @@ export default function UserForm() {
             cpf: data.cpf,
             email: data.email,
             role: data.role === 'admin' ? UserRole.ADMIN :
-                data.role === 'enterprise' ? UserRole.ENTERPRISE : UserRole.USER,
+                data.role === 'user' ? UserRole.USER : UserRole.USER,
         };
 
         if (data.password && data.password.trim() !== '') {
@@ -241,7 +240,6 @@ export default function UserForm() {
                                 <option value="">Selecione...</option>
                                 <option value="user">Usuário</option>
                                 <option value="admin">Admin</option>
-                                <option value="enterprise">Empresa</option>
                             </select>
                             {errors.role && (
                                 <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
