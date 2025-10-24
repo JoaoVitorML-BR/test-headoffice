@@ -9,11 +9,13 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AgentsService } from './agents.service';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
+import { FilterAgentDto } from './dto/filter-agent.dto';
 import { AgentResponseDto } from './dto/agent-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -25,7 +27,7 @@ import { UserRole } from '../common/enums/user-role.enum';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('agents')
 export class AgentsController {
-  constructor(private readonly agentsService: AgentsService) {}
+  constructor(private readonly agentsService: AgentsService) { }
 
   @Post()
   @Roles(UserRole.ADMIN)
@@ -41,11 +43,11 @@ export class AgentsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all agents', description: 'Retrieve a list of all agents' })
+  @ApiOperation({ summary: 'Get all agents', description: 'Retrieve a list of all agents with optional filters' })
   @ApiResponse({ status: 200, description: 'List of agents returned successfully', type: [AgentResponseDto] })
   @ApiResponse({ status: 401, description: 'Unauthorized - JWT token missing or invalid' })
-  findAll() {
-    return this.agentsService.findAll();
+  findAll(@Query() filterDto: FilterAgentDto) {
+    return this.agentsService.findAll(filterDto);
   }
 
   @Get(':id')
